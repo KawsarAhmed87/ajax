@@ -9,6 +9,7 @@
       </div>
       <form method="POST" id="storeForm">
         @csrf
+        <input type="hidden" name="update_id" id="update_id">
       <div class="modal-body">
         <div class="row">
           <div class="col-md-12">

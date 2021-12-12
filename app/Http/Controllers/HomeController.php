@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Role;
 use App\Location;
+use App\Http\Requests\UserFormRequest;
 
 class HomeController extends Controller
 {
@@ -30,8 +31,9 @@ class HomeController extends Controller
         return view('home', compact('roles', 'districts'));
     }
 
-    public function store(Request $request){
-        dd($request->all());
+    public function store(UserFormRequest $request){
+       $data = $request->validated();
+       dd($data);
     }
 
     public function upazila_list(Request $request){

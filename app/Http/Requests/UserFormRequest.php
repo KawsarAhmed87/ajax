@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use App\User;
 class UserFormRequest extends FormRequest
 {
     /**
@@ -23,8 +23,13 @@ class UserFormRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+       
+            $rules = User::VALIDATION_RULES;
+            if (request()->update_id) {
+                $rules['email'][2] = 'unique:users,email,'.request()->update_id;
+                $rules['mobile_no'][2] = 'unique:users,mobile_no,'.request()->update_id;
+            }
+            return $rules;
+        
     }
 }
