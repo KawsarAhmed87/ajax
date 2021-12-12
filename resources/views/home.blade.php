@@ -58,6 +58,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
     function showModal(title, btnText){
+        $('#storeForm')[0].reset();
+        $('#storeForm').find('.is-invalid').removeClass('is-invalid');
+        $('#storeForm').find('.error').remove();
+
         $('#saveDataModal').modal({
             keyboard: false,
             backdrop: 'static'
@@ -83,7 +87,19 @@
                 processData: false,
                 cache: false,
                 success: function(data){
-                    console.log(data);
+                     $('#storeForm').find('.is-invalid').removeClass('is-invalid');
+                     $('#storeForm').find('.error').remove();
+                     if (data.status == false) {
+                        $.each(data.errors, function(key, value){
+                        $('#storeForm #'+key).addClass('is-invalid');
+                        $('#storeForm #'+key).parent().append('<div class="error invalid-tooltip d-block">'+value+'</div>');
+                         });
+
+                     }else{
+                        console.log(data.status);
+                        $('#saveDataModal').modal('hide');
+                     }
+                    
 
                 },
                 error: function (xhr, ajaxOption, thrownError) {
@@ -101,8 +117,8 @@
                 data: {district_id:district_id, _token: _token},
                 dataType: "JSON",
                 success: function(data){
-                    $('#upazil_id').html('');
-                    $('#upazil_id').html(data);
+                    $('#upazila_id').html('');
+                    $('#upazila_id').html(data);
 
                 },
                 error: function (xhr, ajaxOption, thrownError) {

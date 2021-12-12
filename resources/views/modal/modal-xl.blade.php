@@ -32,7 +32,7 @@
             @endif
           </x-selectbox>
 
-           <x-selectbox labelName="Upazila" name="upazil_id" required="required" col="col-md-12"/>
+           <x-selectbox labelName="Upazila" name="upazila_id" required="required" col="col-md-12"/>
            <x-textbox  labelName="Postal Code" name="postal_code" required="required" col="col-md-12" placeholder="Enter Postal Code"/>
            <x-textarea  labelName="Address" name="address" required="required" col="col-md-12" placeholder="Enter Address"/>
           </div>            

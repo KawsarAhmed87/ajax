@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Role;
 use App\Location;
 use App\Http\Requests\UserFormRequest;
+use App\User;
 
 class HomeController extends Controller
 {
@@ -33,7 +34,14 @@ class HomeController extends Controller
 
     public function store(UserFormRequest $request){
        $data = $request->validated();
-       dd($data);
+       $result = User::updateOrCreate(['id' => $request->update_id],$data);
+
+       if ($request) {
+           $output = ['status' => 'success', 'message' => 'Data inserted'];
+       }else{
+        $output = ['status' => 'error', 'message' => 'Data not inserted'];
+       }
+       return response()->json($output);
     }
 
     public function upazila_list(Request $request){
