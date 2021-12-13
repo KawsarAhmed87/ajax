@@ -1,12 +1,16 @@
 @extends('layouts.app')
 @push('style')
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<link rel="stylesheet" type="text/css" href="{{asset('css/dropify.min.css')}}">
 <style type="text/css">
     .required label:first-child::after{
     content: "* ";
     color: red;
     font-weight: bold;
 }
+ .dropify-message .file-icon p {
+        font-size: 14px !important;
+    }
 </style>
 @endpush
 
@@ -58,12 +62,16 @@
 @push('script')
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script type="text/javascript" src="{{asset('js/dropify.min.js')}}"></script>
 <script>
    
+   $('.dropify').dropify();
+
     function showModal(title, btnText){
         $('#storeForm')[0].reset();
         $('#storeForm').find('.is-invalid').removeClass('is-invalid');
         $('#storeForm').find('.error').remove();
+        $('.dropify-clear').trigger('click');
 
         $('#saveDataModal').modal({
             keyboard: false,

@@ -7,9 +7,11 @@ use App\Role;
 use App\Location;
 use App\Http\Requests\UserFormRequest;
 use App\User;
+use App\Traits\Uploadable;
 
 class HomeController extends Controller
 {
+    use Uploadable;
     /**
      * Create a new controller instance.
      *
@@ -34,7 +36,19 @@ class HomeController extends Controller
 
     public function store(UserFormRequest $request){
        $data = $request->validated();
-       $result = User::updateOrCreate(['id' => $request->update_id],$data);
+      // $result = User::updateOrCreate(['id' => $request->update_id],$data);
+
+       $collection = collect($data)->except(['avatar', 'password_confirmation']);
+        if ($request->file('avatar')) {
+            $avatar = $this->upload_file($request->file('avatar'), USER_AVATAR);
+            $collection = $collection->merge(compact('avatar'));
+
+            /*if (!empty($request->old_avatar)) {
+                $this->delete_file($request->old_avatar, USER_AVATAR);
+            }*/
+            
+        }
+        $result = User::updateOrCreate(['id' => $request->update_id], $collection->all());
 
        if ($request) {
            $output = ['status' => 'success', 'message' => 'Data inserted'];
