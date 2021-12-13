@@ -7,6 +7,9 @@ use App\User;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
+use App\Rules\StrongPassword;
+use App\Rules\ValidMobileNumber;
+
 class UserFormRequest extends FormRequest
 {
     
@@ -39,6 +42,8 @@ class UserFormRequest extends FormRequest
                 $rules['email'][2] = 'unique:users,email,'.request()->update_id;
                 $rules['mobile_no'][2] = 'unique:users,mobile_no,'.request()->update_id;
             }
+            $rules['password'][3] = new StrongPassword;
+            $rules['mobile_no'][3] = new ValidMobileNumber;
             return $rules;
         
     }

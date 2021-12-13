@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @push('style')
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <style type="text/css">
     .required label:first-child::after{
     content: "* ";
@@ -56,7 +57,9 @@
 
 @push('script')
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
+   
     function showModal(title, btnText){
         $('#storeForm')[0].reset();
         $('#storeForm').find('.is-invalid').removeClass('is-invalid');
@@ -96,7 +99,7 @@
                          });
 
                      }else{
-                        console.log(data.status);
+                        flashMessage(data.status, data.message)
                         $('#saveDataModal').modal('hide');
                      }
                     
@@ -125,6 +128,40 @@
                 console.log(thrownError + '\r\n' + xhr.statusText + '\r\n' + xhr.responseText);
                  }
             })
+        }
+    }
+
+    function flashMessage(status, message){
+        toastr.options = {
+          "closeButton": true,
+          "debug": false,
+          "newestOnTop": false,
+          "progressBar": true,
+          "positionClass": "toast-top-right",
+          "preventDuplicates": false,
+          "onclick": null,
+          "showDuration": "300",
+          "hideDuration": "1000",
+          "timeOut": "5000",
+          "extendedTimeOut": "1000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+        }
+        switch (status) {
+            case 'success':
+                toastr.success(message, 'SUCCESS');
+                break;
+            case 'error':
+                toastr.error(message, 'ERROR');
+                break;
+            case 'info':
+                toastr.info(message, 'INFORMARTION');
+                break;
+            case 'warning':
+                toastr.warning(message, 'WARNING');
+                break;
         }
     }
 </script>
