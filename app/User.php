@@ -58,6 +58,19 @@ class User extends Authenticatable
         $this->attributes['password'] = Hash::make($value);
     }
 
+   public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+    public function district()
+    {
+        return $this->belongsTo(Location::class, 'district_id', 'id');
+    }
+    public function upazila()
+    {
+        return $this->belongsTo(Location::class, 'upazila_id', 'id');
+    }
+
 
     private $order = array('users.id' => 'desc');
     private $column_order;
@@ -84,6 +97,42 @@ class User extends Authenticatable
     {
         $this->lengthVlaue = $lengthVlaue;
     }
+
+
+
+    private function get_datatable_query(){
+        $query = self::with(['role:id,role_name', 'district:id,location_name', 'upazila:id,location_name']);
+
+        if (isset($this->orderValue) && isset($this->dirValue)) {
+            $query->orderBy($this->column_order[$this->orderValue], $this->dirValue);
+        } else if (isset($this->order)) {
+            $query->orderBy(key($this->order), $this->order[key($this->order)]);
+        }
+        
+        return $query;
+    }
+
+    public function getList(){
+        $query = $this->get_datatable_query();
+        if ($this->lengthVlaue != -1) {
+            $query->offset($this->startVlaue)->limit($this->lengthVlaue);
+        }
+
+        return $query->get();
+    }
+
+    public function count_filtered()
+    {
+        $query = $this->get_datatable_query();
+        return $query->get()->count();
+    }
+
+    public function count_all()
+    {
+        return self::toBase()->get()->count();
+    }
+
+
 
 
 }
