@@ -61,14 +61,14 @@
 @endsection
 
 @push('script')
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script type="text/javascript" src="{{asset('js/datatables.bundle7.0.8.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script type="text/javascript" src="{{asset('js/dropify.min.js')}}"></script>
 <script>
 
    var table;
-   $(document).ready(function(){
+ 
      table = $('#dataTable').DataTable({
             "processing": true, //Feature control the processing indicator
             "serverSide": true, //Feature control DataTable server side processing mode
@@ -87,9 +87,17 @@
                 infoEmpty: '',
                 zeroRecords: '<strong class="text-danger">No Data Found</strong>'
             },
-            
+             "ajax": {
+                "url": "{{route('user.list')}}",
+                "type": "POST",
+                "data": function (data) {
+                   
+                    data._token = _token;
+                }
+            },
      });
-   });
+
+
 
    $('.dropify').dropify();
     function showModal(title, btnText){

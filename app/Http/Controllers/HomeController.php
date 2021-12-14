@@ -34,6 +34,12 @@ class HomeController extends Controller
         return view('home', compact('roles', 'districts'));
     }
 
+    public function userList(Request $request){
+        if ($request->ajax()) {
+            dd($request->all());
+        }
+    }
+
     public function store(UserFormRequest $request){
        $data = $request->validated();
       // $result = User::updateOrCreate(['id' => $request->update_id],$data);
