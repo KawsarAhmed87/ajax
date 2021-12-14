@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @push('style')
+<link rel="stylesheet" type="text/css" href="{{asset('css/datatables.bundle7.0.8.css')}}">
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <link rel="stylesheet" type="text/css" href="{{asset('css/dropify.min.css')}}">
 <style type="text/css">
@@ -35,7 +36,7 @@
                         </div>
                     @endif
 
-                    <table class="table table-border">
+                    <table class="table table-border" id="dataTable">
                         <thead>
                             <th>SL</th>
                             <th>Image</th>
@@ -61,12 +62,36 @@
 
 @push('script')
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="{{asset('js/datatables.bundle7.0.8.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script type="text/javascript" src="{{asset('js/dropify.min.js')}}"></script>
 <script>
-   
-   $('.dropify').dropify();
 
+   var table;
+   $(document).ready(function(){
+     table = $('#dataTable').DataTable({
+            "processing": true, //Feature control the processing indicator
+            "serverSide": true, //Feature control DataTable server side processing mode
+            "order": [], //Initial no order
+            "responsive": true, //Make table responsive in mobile device
+            "bInfo": true, //TO show the total number of data
+            "bFilter": false, //For datatable default search box show/hide
+            "lengthMenu": [
+                [5, 10, 15, 25, 50, 100, 1000, 10000, -1],
+                [5, 10, 15, 25, 50, 100, 1000, 10000, "All"]
+            ],
+            "pageLength": 5, //number of data show per page
+                        "language": {
+                processing: `<img src="{{asset('svg/table-loading.svg')}}" alt="Loading...."/>`,
+                emptyTable: '<strong class="text-danger">No Data Found</strong>',
+                infoEmpty: '',
+                zeroRecords: '<strong class="text-danger">No Data Found</strong>'
+            },
+            
+     });
+   });
+
+   $('.dropify').dropify();
     function showModal(title, btnText){
         $('#storeForm')[0].reset();
         $('#storeForm').find('.is-invalid').removeClass('is-invalid');
