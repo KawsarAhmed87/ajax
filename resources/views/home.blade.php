@@ -68,7 +68,8 @@
 <script>
 
    var table;
- 
+   // $(document).ready(function () {
+
      table = $('#dataTable').DataTable({
             "processing": true, //Feature control the processing indicator
             "serverSide": true, //Feature control DataTable server side processing mode
@@ -98,6 +99,8 @@
      });
 
 
+  // });
+  
 
    $('.dropify').dropify();
     function showModal(title, btnText){

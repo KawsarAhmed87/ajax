@@ -57,4 +57,33 @@ class User extends Authenticatable
     {
         $this->attributes['password'] = Hash::make($value);
     }
+
+
+    private $order = array('users.id' => 'desc');
+    private $column_order;
+
+    
+    private $orderValue;
+    private $dirValue;
+    private $startVlaue;
+    private $lengthVlaue;
+
+    public function setOrderValue($orderValue)
+    {
+        $this->orderValue = $orderValue;
+    }
+    public function setDirValue($dirValue)
+    {
+        $this->dirValue = $dirValue;
+    }
+    public function setStartValue($startVlaue)
+    {
+        $this->startVlaue = $startVlaue;
+    }
+    public function setLengthValue($lengthVlaue)
+    {
+        $this->lengthVlaue = $lengthVlaue;
+    }
+
+
 }
