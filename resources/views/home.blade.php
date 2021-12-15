@@ -36,7 +36,9 @@
                         </div>
                     @endif
 
-                    <table class="table table-border" id="dataTable">
+                    <div class="row">
+                        <div class="col-md-12">
+                        <table class="table table-border" id="dataTable">
                         <thead>
                             <th>SL</th>
                             <th>Image</th>
@@ -52,6 +54,8 @@
                             <th>Action</th>
                         </thead>
                     </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -154,6 +158,13 @@
                  }
             })
     }
+
+    $(document).on('click', '.edit_data', function(){
+        let id = $(this).data(id);
+        if (id) {
+            
+        }
+    });
 
 
     function upazilaList(district_id){

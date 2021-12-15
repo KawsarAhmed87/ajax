@@ -83,7 +83,7 @@ class HomeController extends Controller
                 $row[] = $value->upazila->location_name;
                 $row[] = $value->postal_code;
                 $row[] = $value->email_verified_at ? '<span class="badge badge-pill badge-success">Verified</span>' : '<span class="badge badge-pill badge-danger">Unverified</span>';
-                $row[] = $value->status; // $this->toggle_button($value->status,$value->id);
+                $row[] = STATUS[$value->status];//$this->toggle_button($value->status,$value->id);
                 $row[] = $btngroup;
                 $data[] = $row;
             }
