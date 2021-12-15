@@ -26,4 +26,5 @@ Route::post('/upazila-list', 'HomeController@upazila_list')->name('upazila.list'
 Route::group(['prefix' => 'user', 'as' => 'user.'], function(){
     Route::post('store', 'HomeController@store')->name('store');
     Route::post('list', 'HomeController@userList')->name('list');
+    Route::post('edit', 'HomeController@edit')->name('edit');
 });

@@ -127,6 +127,18 @@ class HomeController extends Controller
        return response()->json($output);
     }
 
+    public function edit(Request $request){
+        if ($request->ajax()) {
+            $data = User::toBase()->find($request->id);
+            if ($data) {
+                $output['user'] = $data;
+            }else{
+                $output['user'] = '';
+            }
+            return response()->json($output);
+        }
+    }
+
     public function upazila_list(Request $request){
         if ($request->ajax()) {
             if ($request->district_id) {

@@ -111,6 +111,7 @@
         $('#storeForm')[0].reset();
         $('#storeForm').find('.is-invalid').removeClass('is-invalid');
         $('#storeForm').find('.error').remove();
+         $('#password, #password_confirmation').parent().removeClass('d-none');
         $('.dropify-clear').trigger('click');
 
         $('#saveDataModal').modal({
@@ -160,8 +161,50 @@
     }
 
     $(document).on('click', '.edit_data', function(){
-        let id = $(this).data(id);
+        let id = $(this).data('id');
         if (id) {
+             $.ajax({
+                url: "{{route('user.edit')}}",
+                type: "POST",
+                data: {id:id, _token: _token},
+                dataType: "JSON",
+                success: function(data){
+                     $('#password, #password_confirmation').parent().addClass('d-none');
+                    $('#storeForm #update_id').val(data.user.id);
+                    $('#storeForm #name').val(data.user.name);
+                    $('#storeForm #email').val(data.user.email);
+                    $('#storeForm #mobile_no').val(data.user.mobile_no);
+                    $('#storeForm #district_id').val(data.user.district_id);
+                    upazilaList(data.user.district_id, 'storeForm');
+                    setTimeout(() => {
+                        $('#storeForm #upazila_id').val(data.user.upazila_id);
+                    }, 1000);
+                    $('#storeForm #postal_code').val(data.user.postal_code);
+                    $('#storeForm #address').val(data.user.address);
+                    $('#storeForm #role_id').val(data.user.role_id);
+                      if (data.user.avatar) {
+                        let avatar = "{{asset('storage/'.USER_AVATAR)}}/" + data.user.avatar;
+                        $('#storeForm .dropify-preview').css('display', 'block');
+                        $('#storeForm .dropify-render').html('<image src="' + avatar + '"/>');
+                        $('#storeForm #old_avatar').val(data.user.avatar);
+                    }
+
+                    $('#saveDataModal').modal({
+                        keyboard: false,
+                        backdrop: 'static',
+                    });
+                    $('#saveDataModal .modal-title').html(
+                        '<i class="fas fa-edit"></i> <span>Edit ' + data.user.name + '</span>');
+                    $('#saveDataModal #save-btn').text('update');
+                  
+
+
+                },
+                error: function (xhr, ajaxOption, thrownError) {
+                console.log(thrownError + '\r\n' + xhr.statusText + '\r\n' + xhr.responseText);
+                 }
+            })
+
             
         }
     });
