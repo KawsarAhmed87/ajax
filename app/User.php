@@ -19,8 +19,6 @@ class User extends Authenticatable
         'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,svg,webp'],
         'district_id' => ['required', 'integer'],
         'upazila_id' => ['required', 'integer'],
-        'password' => ['required', 'string'],
-        'password_confirmation' => ['required', 'string'],
         'postal_code' => ['required', 'numeric'],
         'address' => ['required', 'string'],
 

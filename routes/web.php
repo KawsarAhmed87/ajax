@@ -27,4 +27,6 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function(){
     Route::post('store', 'HomeController@store')->name('store');
     Route::post('list', 'HomeController@userList')->name('list');
     Route::post('edit', 'HomeController@edit')->name('edit');
+    Route::post('show', 'HomeController@show')->name('show');
+    Route::post('delete', 'HomeController@destroy')->name('delete');
 });

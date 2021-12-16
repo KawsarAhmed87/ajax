@@ -3,6 +3,7 @@
 <link rel="stylesheet" type="text/css" href="{{asset('css/datatables.bundle7.0.8.css')}}">
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <link rel="stylesheet" type="text/css" href="{{asset('css/dropify.min.css')}}">
+<link rel="stylesheet" href="{{ asset('css/sweetalert2.min.css') }}">
 <style type="text/css">
     .required label:first-child::after{
     content: "* ";
@@ -62,6 +63,7 @@
     </div>
 </div>
 @include('modal.modal-xl')
+@include('modal.modal-view')
 @endsection
 
 @push('script')
@@ -69,6 +71,7 @@
 <script type="text/javascript" src="{{asset('js/datatables.bundle7.0.8.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script type="text/javascript" src="{{asset('js/dropify.min.js')}}"></script>
+<script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 <script>
 
    var table;
@@ -108,10 +111,10 @@
 
    $('.dropify').dropify();
     function showModal(title, btnText){
-        $('#storeForm')[0].reset();
+         $('#storeForm')[0].reset();
         $('#storeForm').find('.is-invalid').removeClass('is-invalid');
         $('#storeForm').find('.error').remove();
-         $('#password, #password_confirmation').parent().removeClass('d-none');
+        $('#password, #password_confirmation').parent().removeClass('d-none');
         $('.dropify-clear').trigger('click');
 
         $('#saveDataModal').modal({
@@ -125,13 +128,21 @@
     $(document).on('click', '#save-btn', function () {
         let storeForm = document.getElementById('storeForm');
         let formData = new FormData(storeForm);
-        store_form_data(formData);
+        let url = "{{route('user.store')}}";
+        let id = $('#update_id').val();
+        let method;
+        if (id) {
+            method = 'update';
+        } else {
+            method = 'add';
+        }
+        store_form_data(table, method, url, formData);
        
     });
 
-    function store_form_data(formData){
+    function store_form_data(table, method, url, formData){
          $.ajax({
-                url: "{{route('user.store')}}",
+                url: url,
                 type: "POST",
                 data: formData,
                 dataType: "JSON",
@@ -148,9 +159,16 @@
                          });
 
                      }else{
-                        flashMessage(data.status, data.message)
-                        $('#saveDataModal').modal('hide');
-                     }
+                        flashMessage(data.status, data.message);
+                        if (data.status == 'success') {
+                            if (method == 'update') {
+                                table.ajax.reload(null, false);
+                            } else {
+                                table.ajax.reload();
+                            }
+                            $('#saveDataModal').modal('hide');
+                         }
+                  }
                     
 
                 },
@@ -161,6 +179,11 @@
     }
 
     $(document).on('click', '.edit_data', function(){
+        $('#storeForm')[0].reset();
+        $('#storeForm').find('.is-invalid').removeClass('is-invalid');
+        $('#storeForm').find('.error').remove();
+        $('.dropify-clear').trigger('click');
+
         let id = $(this).data('id');
         if (id) {
              $.ajax({
@@ -209,6 +232,75 @@
         }
     });
 
+
+
+    $(document).on('click', '.view_data', function () {
+        let id = $(this).data('id');
+        if (id) {
+            $.ajax({
+                url: "{{route('user.show')}}",
+                type: "POST",
+                data: {
+                    id: id,
+                    _token: _token
+                },
+                dataType: "JSON",
+                success: function (data) {
+                    $('#view_data').html('');
+                    $('#view_data').html(data.user_view);
+                    $('#viewDataModal').modal({
+                        keyboard: false,
+                        backdrop: 'static',
+                    });
+                    $('#viewDataModal .modal-title').html('<i class="fas fa-eye"></i> <span> ' +
+                        data.name + ' Details</span>');
+                },
+                error: function (xhr, ajaxOption, thrownError) {
+                    console.log(thrownError + '\r\n' + xhr.statusText + '\r\n' + xhr.responseText);
+                }
+            });
+        }
+    });
+
+
+     $(document).on('click', '.delete_data', function () {
+        let id = $(this).data('id');
+        let name = $(this).data('name');
+        let row = table.row($(this).parent('tr'));
+        let url = "{{ route('user.delete') }}";
+        delete_data(id, url, table, row, name);
+    });
+    function delete_data(id, url, table, row, name) {
+        Swal.fire({
+            title: 'Are you sure to delete ' + name + ' data?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        id: id,
+                        _token: _token
+                    },
+                    dataType: "JSON",
+                }).done(function (response) {
+                    if (response.status == "success") {
+                        Swal.fire("Deleted", response.message, "success").then(function () {
+                            table.row(row).remove().draw(false);
+                        });
+                    }
+                }).fail(function () {
+                    swal.fire('Oops...', "Somthing went wrong with ajax!", "error");
+                });
+            }
+        });
+    }
 
     function upazilaList(district_id){
         if (district_id) {

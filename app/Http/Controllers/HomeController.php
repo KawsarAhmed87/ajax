@@ -112,19 +112,43 @@ class HomeController extends Controller
             $avatar = $this->upload_file($request->file('avatar'), USER_AVATAR);
             $collection = $collection->merge(compact('avatar'));
 
-            /*if (!empty($request->old_avatar)) {
+            if (!empty($request->old_avatar)) {
                 $this->delete_file($request->old_avatar, USER_AVATAR);
-            }*/
+            }
             
         }
+
+
         $result = User::updateOrCreate(['id' => $request->update_id], $collection->all());
 
        if ($request) {
+        
            $output = ['status' => 'success', 'message' => 'Data inserted'];
        }else{
+
+         if (!empty($avatar)) {
+                $this->delete_file($avatar, USER_AVATAR);
+            }
+            
         $output = ['status' => 'error', 'message' => 'Data not inserted'];
        }
        return response()->json($output);
+    }
+
+     public function show(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = User::with(['role:id,role_name', 'district:id,location_name',
+                'upazila:id,location_name'])->find($request->id);
+            if ($data) {
+                $output['user_view'] = view('user_details', compact('data'))->render();
+                $output['name'] = $data->name;
+            } else {
+                $output['user_view'] = '';
+                $output['name'] = '';
+            }
+            return response()->json($output);
+        }
     }
 
     public function edit(Request $request){
@@ -134,6 +158,26 @@ class HomeController extends Controller
                 $output['user'] = $data;
             }else{
                 $output['user'] = '';
+            }
+            return response()->json($output);
+        }
+    }
+
+    public function destroy(Request $request){
+        if ($request->ajax()) {
+            $data = User::find($request->id);
+            if ($data) {
+                $avatar = $data->avatar;
+                if ($data->delete()) {
+                    if (!empty($avatar)) {
+                        $this->delete_file($avatar, USER_AVATAR);
+                    }
+                    $output = ['status' => 'success', 'message' => 'Data deleted successfully'];
+                } else {
+                    $output = ['status' => 'error', 'message' => 'Data cannot delete!'];
+                }
+            } else {
+                $output = ['status' => 'error', 'message' => 'Data cannot delete!'];
             }
             return response()->json($output);
         }
