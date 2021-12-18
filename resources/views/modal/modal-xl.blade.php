@@ -24,7 +24,7 @@
           <x-textbox type="password" labelName="Password" name="password" required="required" col="col-md-12" placeholder="Enter Password"/>
           <x-textbox type="password" labelName="Confirm Password" name="password_confirmation" required="required" col="col-md-12" placeholder="Confirm Password"/>
           
-          <x-selectbox onchange="upazilaList(this.value)" labelName="District" name="district_id" required="required" col="col-md-12">
+          <x-selectbox onchange="upazilaList(this.value, 'storeForm')" labelName="District" name="district_id" required="required" col="col-md-12">
             @if(!$districts->isEmpty())
               @foreach($districts as $data)
                 <option value="{{$data->id}}">{{$data->location_name}}</option>

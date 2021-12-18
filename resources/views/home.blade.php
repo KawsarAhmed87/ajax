@@ -39,6 +39,42 @@
 
                     <div class="row">
                         <div class="col-md-12">
+                            <form method="POST" id="form-filter">
+                                <div class="row">
+                                <x-textbox labelName="Name" name="name" col="col-md-3" placeholder="Enter name" />
+                                <x-textbox type="email" labelName="Email" name="email" col="col-md-3"
+                                    placeholder="Enter email" />
+                                <x-textbox labelName="Mobile No" name="mobile_no" col="col-md-3"
+                                    placeholder="Enter mobile no" />
+                                <x-selectbox labelName="Role" name="role_id" required="required" col="col-md-3">
+                                   @if(!$roles->isEmpty())
+                                      @foreach($roles as $data)
+                                        <option value="{{$data->id}}">{{$data->role_name}}</option>
+                                      @endforeach
+                                    @endif
+                                </x-selectbox>
+                                <x-selectbox onchange="upazilaList(this.value,'form-filter')" labelName="District"
+                                    name="district_id" col="col-md-3">
+                                    @if(!$districts->isEmpty())
+              @foreach($districts as $data)
+                <option value="{{$data->id}}">{{$data->location_name}}</option>
+              @endforeach
+            @endif
+                                </x-selectbox>
+                                <x-selectbox labelName="Upazila" name="upazila_id" col="col-md-3" />
+                                <x-selectbox labelName="Status" name="status" col="col-md-3">
+                                    <option value="">Select Please</option>
+                                    <option value="1">Active</option>
+                                    <option value="2">Inactive</option>
+                                </x-selectbox>
+                                <div class="form-group col-md-3" style="padding-top:30px;">
+                                    <button type="button" class="btn btn-success" id="btn-filter">Search</button>
+                                    <button type="reset" class="btn btn-danger" id="btn-reset">Reset</button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                        <div class="col-md-12 mt-5">
                         <table class="table table-border" id="dataTable">
                         <thead>
                             <th>SL</th>
@@ -99,14 +135,36 @@
                 "url": "{{route('user.list')}}",
                 "type": "POST",
                 "data": function (data) {
-                   
+                    data.name = $('#form-filter #name').val();
+                    data.email = $('#form-filter #email').val();
+                    data.mobile_no = $('#form-filter #mobile_no').val();
+                    data.role_id = $('#form-filter #role_id').val();
+                    data.district_id = $('#form-filter #district_id').val();
+                    data.upazila_id = $('#form-filter #upazila_id').val();
+                    data.status = $('#form-filter #status').val();
                     data._token = _token;
                 }
             },
+            "columnDefs": [{
+                    "targets": [1,11],
+                    "orderable": false,
+                    "className": "text-center"
+                },
+                
+            ],
      });
 
 
   // });
+
+
+    $('#btn-filter').click(function () {
+        table.ajax.reload();
+    });
+    $('#btn-reset').click(function () {
+        $('#form-filter')[0].reset();
+        table.ajax.reload();
+    });
   
 
    $('.dropify').dropify();
@@ -302,22 +360,24 @@
         });
     }
 
-    function upazilaList(district_id){
+     function upazilaList(district_id, form) {
         if (district_id) {
             $.ajax({
                 url: "{{route('upazila.list')}}",
                 type: "POST",
-                data: {district_id:district_id, _token: _token},
+                data: {
+                    district_id: district_id,
+                    _token: _token
+                },
                 dataType: "JSON",
-                success: function(data){
-                    $('#upazila_id').html('');
-                    $('#upazila_id').html(data);
-
+                success: function (data) {
+                    $('#' + form + ' #upazila_id').html('');
+                    $('#' + form + ' #upazila_id').html(data);
                 },
                 error: function (xhr, ajaxOption, thrownError) {
-                console.log(thrownError + '\r\n' + xhr.statusText + '\r\n' + xhr.responseText);
-                 }
-            })
+                    console.log(thrownError + '\r\n' + xhr.statusText + '\r\n' + xhr.responseText);
+                }
+            });
         }
     }
 
