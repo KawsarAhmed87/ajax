@@ -556,6 +556,60 @@
     }
 
 
+     $(document).on('click', '#bulk_action_delete', function () {
+        let id = [];
+        let rows;
+        $('.select_data:checked').each(function(){
+            id.push($(this).val());
+            rows = table.rows($('.select_data:checked').parents('tr'));
+        });
+        if(id.length == 0){
+            Swal.fire({
+                type:'error',
+                title:'Error',
+                text:'Please checked at least one row of table!',
+                icon: 'warning',
+            });
+        }else{
+            let url = "{{route('user.bulk.action.delete')}}";
+            bulk_action_delete(id,url,table,rows);
+        }
+    });
+    function bulk_action_delete(id,url,table,rows){
+        Swal.fire({
+            title: 'Are you sure to delete all checked data?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete all!'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        id: id,
+                        _token: _token
+                    },
+                    dataType: "JSON",
+                }).done(function (response) {
+                    if (response.status == "success") {
+                        Swal.fire("Deleted", response.message, "success").then(function () {
+                            
+                            table.rows(rows).remove().draw(false);
+                            $('#select_all').prop('checked',false);
+                        });
+                    }
+                }).fail(function () {
+                    swal.fire('Oops...', "Somthing went wrong with ajax!", "error");
+                });
+            }
+        });
+    }
+
+
      $(document).on('change', '.change_status', function () {
         let id = $(this).data('id');
         let status;

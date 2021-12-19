@@ -213,6 +213,28 @@ class HomeController extends Controller
         }
     }
 
+    public function bulkActionDelete(Request $request)
+    {
+        if ($request->ajax()) {
+            $avatars = User::toBase()->select('avatar')->whereIn('id',$request->id)->get();
+            $result = User::destroy($request->id);
+            if ($result) {
+                if(!empty($avatars)){
+                    foreach ($avatars as $value) {
+                        if (!empty($value->avatar)) {
+                            $this->delete_file($value->avatar, USER_AVATAR);
+                        }
+                    }
+                }
+                $output = ['status' => 'success', 'message' => 'Data has been deleted successfully'];
+            } else {
+                $output = ['status' => 'error', 'message' => 'Data cannot delete!'];
+            }
+            return response()->json($output);
+        }
+    }
+
+
      public function changeStatus(Request $request)
     {
         if ($request->ajax()) {
