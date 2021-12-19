@@ -132,6 +132,12 @@
                         <div class="col-md-12 mt-5">
                         <table class="table table-border" id="dataTable">
                         <thead>
+                            <th>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="select_all" onchange="select_all()">
+                                        <label class="custom-control-label" for="select_all"></label>
+                                      </div>
+                                </th>
                             <th>SL</th>
                             <th>Image</th>
                             <th>Name</th>
@@ -201,7 +207,7 @@
                 }
             },
             "columnDefs": [{
-                    "targets": [1,11],
+                    "targets": [0,2,11],
                     "orderable": false,
                     "className": "text-center"
                 },
@@ -636,4 +642,5 @@
         }
     }
 </script>
+<script src="{{ asset('js/main.js') }}"></script>
 @endpush

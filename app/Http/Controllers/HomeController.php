@@ -86,7 +86,7 @@ class HomeController extends Controller
               </div>';
 
                 $row = [];
-             /*  
+               
 
               $row[] = '<div class="custom-control custom-checkbox">
                 <input type="checkbox" value="'.$value->id.'"
@@ -94,7 +94,7 @@ class HomeController extends Controller
                 <label class="custom-control-label" for="checkbox'.$value->id.'"></label>
               </div>';
 
-              */
+              
                 $row[] = $no;
                 $row[] = $this->avatar($value->avatar, $value->name);
                 $row[] = $value->name;
